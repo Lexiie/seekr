@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand};
 
 #[derive(Debug, Parser)]
-#[command(name = "seekr", version, about = "Network vantage diagnostic engine")]
+#[command(name = "seekr", version, about = "See what the web sees.")]
 pub struct Cli {
     #[arg(long, global = true)]
     pub proxy: Option<String>,

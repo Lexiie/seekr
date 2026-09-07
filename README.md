@@ -1,7 +1,52 @@
-# seekr
+# Seekr
 
-Network vantage diagnostic engine: see what the web sees from different
-network paths, compare the results, and explain why access differs.
+## See what the web sees.
+
+Why does a website work from one network but fail from another?
+
+A 403 doesn't tell you whether you're blocked by your IP, your location,
+a WAF, a rate limit, or something else.
+
+Seekr investigates.
+
+It observes a target from different network vantage points, collects
+evidence across DNS, TCP, TLS, HTTP, network identity, and response
+content, then compares the results to explain what changed and what is
+most likely causing the difference.
+
+Don't just check if it works. Understand why.
+
+**SEE → COMPARE → EXPLAIN**
+
+## What Seekr Actually Does
+
+```text
+Target
+  ↓
+Network Vantage
+  ↓
+Observe
+  ↓
+Compare
+  ↓
+Detect
+  ↓
+Explain
+```
+
+## Not Another Proxy Checker
+
+A proxy checker asks:
+
+> "Does this proxy work?"
+
+Seekr asks:
+
+> "Why does the web behave differently through this network?"
+
+It doesn't reduce a request to a status code. It correlates multiple
+observations — status, content, identity, timing — before producing a
+diagnosis, and it refuses to guess when the evidence isn't there.
 
 ## Install
 
