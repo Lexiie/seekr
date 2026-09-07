@@ -48,6 +48,23 @@ It doesn't reduce a request to a status code. It correlates multiple
 observations — status, content, identity, timing — before producing a
 diagnosis, and it refuses to guess when the evidence isn't there.
 
+## More Than a Status Code
+
+Seekr doesn't only handle 403. It investigates the full picture:
+
+- **Access responses** — 403, 429 with Retry-After, 452, 5xx, and block
+  pages served with 200 (different content or landing page per region).
+- **Transport failures** — DNS, TCP, TLS, timeouts, redirect loops,
+  truncated bodies — each attributed to the right stage, not lumped
+  together.
+- **Vantage failures** — dead proxies, bad auth, slow exits are reported
+  as vantage problems, never mistaken for target blocking.
+- **Divergence signals** — status, content fingerprint, final URL, IP,
+  country, ASN, timing, instability across repeated probes.
+
+One signal is never enough for a verdict. A lone 403 without
+corroborating evidence yields `unknown`, not a guess.
+
 ## Install
 
 ```bash
