@@ -18,6 +18,8 @@ Don't just check if it works. Understand why.
 
 **SEE → COMPARE → EXPLAIN**
 
+![Seekr diagnosing a geo-restricted site from two network vantages](assets/demo.gif)
+
 ## What Seekr Actually Does
 
 ```text
