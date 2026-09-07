@@ -65,6 +65,51 @@ Seekr doesn't only handle 403. It investigates the full picture:
 One signal is never enough for a verdict. A lone 403 without
 corroborating evidence yields `unknown`, not a guess.
 
+## Use Cases
+
+### Who it's for
+
+- **Developers shipping multi-region products** — verify a page, API, or
+  checkout actually behaves the same from every market you serve, before
+  your users tell you it doesn't.
+- **QA / SRE teams** — turn "works on my network" into reproducible,
+  evidence-backed checks in CI instead of screenshots over chat.
+- **Researchers and analysts** — measure access differences across
+  networks with machine-readable output instead of manual curl
+  archaeology.
+- **Anyone operating through proxies or regional exits** — confirm the
+  path works *and* understand what the destination sees through it.
+
+### What it's for
+
+**"It works from the US but not from here."**
+Diagnose the same URL from direct and a regional vantage. Seekr tells
+you whether the difference is geographic, address-based, or something
+else entirely — with the evidence to back it.
+
+```bash
+seekr diagnose https://example.com/shop --proxy http://us-exit:8080
+```
+
+**"Is it me or is it them?"**
+A failing proxy looks identical to a blocked target if you only watch
+status codes. Seekr separates vantage problems (`proxy_failure`) from
+target-side behavior, so you stop blaming the wrong layer.
+
+**"Am I being rate limited or blocked?"**
+429 with Retry-After plus repeated same-vantage behavior reads as rate
+limiting with a concrete back-off step; a lone 403 without markers
+reads as `unknown` instead of a confident-sounding misdiagnosis.
+
+**Fleet checks and automation.**
+`batch` runs a target list with bounded parallelism and input-order
+results; `--json` plus exit codes (`0` healthy, `1` restriction,
+`3+` unreliable run) plug straight into scripts and CI.
+
+```bash
+seekr batch targets.txt --json | jq '.summary'
+```
+
 ## Install
 
 ```bash
