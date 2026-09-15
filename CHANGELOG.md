@@ -3,6 +3,15 @@
 All notable user-facing changes in `seekr` are recorded here.
 Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.0] - 2026-09-08
+
+### Added
+- `watch <URL>`: repeat a diagnosis on `--interval`, alert on stderr
+  when `--alert-on change|restriction` fires. `--times` caps runs,
+  `--json` emits one object per run (`run_index`, `changed`,
+  `prev_kind`), exit code follows the last run.
+- `probes_used` in JSON output for single-target commands.
+
 ## [0.1.0] - 2026-09-08
 
 ### Added

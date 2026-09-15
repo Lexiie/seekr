@@ -3,6 +3,7 @@ pub mod compare;
 pub mod diagnose;
 pub mod probe;
 pub mod trace;
+pub mod watch;
 
 use std::fs;
 use std::time::Duration;

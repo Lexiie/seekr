@@ -68,7 +68,75 @@ fn main() -> ExitCode {
             clap_complete::generate(gen, &mut cmd, "seekr", &mut std::io::stdout());
             ExitCode::from(0)
         }
-        Command::Batch { file } => {            if cli.concurrency == 0 {
+        Command::Watch {
+            url,
+            interval_secs,
+            times,
+            alert_on,
+        } => {
+            use std::time::Duration;
+            let mode = match seekr::application::watch::AlertMode::parse(&alert_on) {
+                Ok(m) => m,
+                Err(e) => {
+                    eprintln!("error: {e}");
+                    return ExitCode::from(2);
+                }
+            };
+            if interval_secs == 0 {
+                eprintln!("error: --interval must be at least 1");
+                return ExitCode::from(2);
+            }
+            if matches!(times, Some(0)) {
+                eprintln!("error: --times must be at least 1");
+                return ExitCode::from(2);
+            }
+            let cfg = seekr::application::watch::WatchConfig {
+                interval: Duration::from_secs(interval_secs),
+                times,
+                mode,
+            };
+            let json = cli.json;
+            let quiet = cli.quiet;
+            let mut last_code = 0;
+            match seekr::application::watch::run(&url, &opts, &cfg, |ev| {
+                last_code = ev.result.diagnosis.as_ref().map(|d| d.kind.exit_code()).unwrap_or(0);
+                if json {
+                    println!(
+                        "{}",
+                        serde_json::to_string(&ev)
+                            .unwrap_or_else(|_| "{}".to_string())
+                    );
+                } else if quiet {
+                    if let Some(d) = &ev.result.diagnosis {
+                        println!("#{} {}", ev.run_index, d.kind.as_str());
+                    }
+                } else {
+                    print_human(
+                        &ev.result.target.url,
+                        &ev.result.evidence,
+                        ev.result.diagnosis.as_ref(),
+                        ev.result.duration_ms,
+                    );
+                }
+                if ev.changed {
+                    eprintln!(
+                        "ALERT run #{}: {} -> {}",
+                        ev.run_index,
+                        ev.prev_kind.as_deref().unwrap_or("-"),
+                        ev.result
+                            .diagnosis
+                            .as_ref()
+                            .map(|d| d.kind.as_str())
+                            .unwrap_or("unknown")
+                    );
+                }
+            }) {
+                Ok(_) => ExitCode::from(last_code as u8),
+                Err(e) => fail(e),
+            }
+        }
+        Command::Batch { file } => {
+            if cli.concurrency == 0 {
                 eprintln!("error: --concurrency must be at least 1");
                 return ExitCode::from(2);
             }

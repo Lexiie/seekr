@@ -44,6 +44,15 @@ pub enum Command {
     Probe { url: String },
     Trace { url: String },
     Batch { file: String },
+    Watch {
+        url: String,
+        #[arg(long = "interval", default_value_t = 60)]
+        interval_secs: u64,
+        #[arg(long = "times")]
+        times: Option<u64>,
+        #[arg(long = "alert-on", default_value = "change")]
+        alert_on: String,
+    },
     Completions { shell: String },
 }
 

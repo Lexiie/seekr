@@ -127,6 +127,7 @@ seekr compare <URL>
 seekr probe <URL>
 seekr trace <URL>
 seekr batch <FILE>
+seekr watch <URL> --interval 60 --times 10 --alert-on change
 ```
 
 Common flags:
@@ -178,6 +179,23 @@ seekr diagnose https://example.com/ --quiet
 
 `targets.txt` holds one URL per line; blank lines and `#` comments are
 ignored and bad lines are skipped with a stderr warning.
+
+## Watch
+
+Re-run a diagnosis on an interval and alert on stderr when it fires:
+
+```bash
+seekr watch https://example.com/ --interval 60 --times 10
+seekr watch https://example.com/ --alert-on restriction --json
+```
+
+- `--alert-on change` (default): alert when the diagnosis kind changes
+  between runs. The first run never alerts.
+- `--alert-on restriction`: alert on every run diagnosed as
+  geo/ip/rate-limit/WAF.
+- With `--json`, each run prints one JSON object (`run_index`,
+  `changed`, `prev_kind`); alerts still go to stderr.
+- Exit code follows the last run. Ctrl-C stops the loop.
 
 ## Shell completions
 
